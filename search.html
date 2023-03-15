@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge"> 
+    <title>AirBnB Search</title>
+    <link rel="stylesheet" type="text/css" href="search.css" />
+</head>
+<style>
+    body {
+      background-color: rgb(221, 221, 221);
+      text-align: center;
+    }
+
+    ul {
+        list-style-type: none;
+        margin: 0 auto;
+        padding: 0;
+        width: 500px;
+        text-align: center;
+    }
+
+    </style>
+<body>
+    <main>
+        <h1>AirBnB Search</h1>
+        <form>
+            <p>Property Type:</p>
+            <input id="property-type" type="text" value="House"><br>
+            <p>Bedrooms:</p>
+            <input id="bedrooms" type="number" value="1"><br>
+            <p>Beds:</p>
+            <input id="beds" type="number" value="1"><br>
+        </form><br>
+
+        <button type="button" onclick="fetchResult()">Find listings!</button><br>
+        <ul id="result"></ul>
+
+        <script>
+            async function fetchResult() {
+                const property_type_text = document.getElementById("property-type").value;
+                const property_type_number = parseInt(property_type_text, 10);
+
+                const bedrooms_text = document.getElementById("bedrooms").value;
+                const bedrooms_number = parseInt(bedrooms_text, 10);
+
+                const beds_text = document.getElementById("beds").value;
+                const beds_number = parseInt(beds_text, 10);
+
+                const api_endpoint = `http://localhost:3000/findOne?property_type=${property_type_text}&bedrooms=${bedrooms_text}&beds=${beds_text}`;
+                const response = await fetch(api_endpoint);
+                const json_response = await response.json()
+
+                const airbnb_listing = document.getElementById("result");
+                airbnb_listing.innerHTML = "";
+
+                for (let i in json_response) {
+                    const li = document.createElement('li');
+                    li.innerText = i + "\n" + json_response[i] + "\n\r";
+                    airbnb_listing.appendChild(li);
+                } 
+            }
+        </script>
+    </main>
+</body>
+</html>

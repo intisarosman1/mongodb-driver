@@ -1,6 +1,7 @@
 import { MongoClient } from "mongodb";
 import * as dotenv from "dotenv";
-import express from "express"
+import express from "express";
+import cors from "cors";
 
 dotenv.config()
 // Replace the uri string with your connection string.
@@ -19,6 +20,7 @@ const client = new MongoClient(uri);
 
 
 const app = express();
+app.use(cors());
 app.set('port', process.env.PORT || 3000);
 
 app.get('/findOne', async (req,res) => {
