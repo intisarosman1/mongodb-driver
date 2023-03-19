@@ -20,30 +20,23 @@ const client = new MongoClient(uri);
 
 
 const app = express();
-app.use(cors());
+app.use(express.json());
 app.set('port', process.env.PORT || 3000);
-
 app.post('/findOne', async (req,res) => {
     try {
-        const database = client.db('sample_airbnb');
-        const coll = database.collection('listingsAndReviews');
+        const database = client.db(req.body.database);
+        const coll = database.collection(req.body.collection);
+        const filter = req.body.filter;
 
-        const filter = {property_type: req.query.property_type, bedrooms: parseInt(req.query.bedrooms), beds: parseInt(req.query.beds)};
-
-        const listing = await coll.findOne(filter);
+        const projection = { projection: req.body.projection };
+        const guide = await coll.findOne(filter, projection);
 
         console.log(req.query);
 
         res.type('json');
         res.status(200);
         res.json({
-          listing: listing['_id'], 
-          listing_url: listing['listing_url'], 
-          name: listing['name'], 
-          summary: listing['summary'], 
-          property_type: listing['property_type'], 
-          bedrooms: listing['bedrooms'], 
-          beds: listing['beds']
+          guide: guide
         });
 
     } catch (error) {
