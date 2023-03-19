@@ -20,24 +20,27 @@ const client = new MongoClient(uri);
 
 
 const app = express();
-app.use(express.json());
+app.use(cors());
 app.set('port', process.env.PORT || 3000);
-app.post('/findOne', async (req,res) => {
-    try {
-        const database = client.db(req.body.database);
-        const coll = database.collection(req.body.collection);
-        const filter = req.body.filter;
 
-        const projection = { projection: req.body.projection };
-        const guide = await coll.findOne(filter, projection);
+app.get('/findOne', async (req,res) => {
+    try {
+        const database = client.db('sample_restaurants');
+        const coll = database.collection('restaurants');
+
+        const filter = { cuisine: req.query.cuisine, borough: req.query.borough};
+
+        const restaurant = await coll.findOne(filter);
 
         console.log(req.query);
 
         res.type('json');
         res.status(200);
-        res.status(200);
         res.json({
-          guide: guide
+          restaurant: restaurant['_id'],
+          name: restaurant['name'],
+          cuisine: restaurant['cuisine'],
+          borough: restaurant['borough']
         });
 
     } catch (error) {

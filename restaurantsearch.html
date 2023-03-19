@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge"> 
+    <title>Restaurant Search</title>
+    <link rel="stylesheet" type="text/css" href="search.css" />
+</head>
+<style>
+    body {
+      background-color: rgb(221, 221, 221);
+      text-align: center;
+    }
+
+    ul {
+        list-style-type: none;
+        margin: 0 auto;
+        padding: 0;
+        width: 500px;
+        text-align: center;
+    }
+
+    </style>
+<body>
+    <main>
+        <h1>Restaurant Search</h1>
+        <form>
+            <p>Cuisine:</p>
+            <input id="cuisine" type="text" value="American"><br>
+            <p>Borough:</p>
+            <input id="borough" type="text" value="Brooklyn"><br>
+        </form><br>
+
+        <button type="button" onclick="fetchResult()">Find restaurants!</button><br>
+        <ul id="result"></ul>
+
+        <script>
+            async function fetchResult() {
+                const cuisine_text = document.getElementById("cuisine").value;
+                const cuisine_number = parseInt(cuisine_text, 10);
+
+                const borough_text = document.getElementById("borough").value;
+                const borough_number = parseInt(borough_text, 10);
+
+                const api_endpoint = `http://localhost:3000/findOne?cuisine=${cuisine_text}&borough=${borough_text}`;
+                const response = await fetch(api_endpoint);
+                const json_response = await response.json()
+
+                const restaurant_result = document.getElementById("result");
+                restaurant_result.innerHTML = "";
+
+                for (let i in json_response) {
+                    const li = document.createElement('li');
+                    li.innerText = i + "\n" + json_response[i] + "\n\r";
+                    restaurant_result.appendChild(li);
+                } 
+            }
+        </script>
+    </main>
+</body>
+</html>

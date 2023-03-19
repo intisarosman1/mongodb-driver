@@ -20,24 +20,31 @@ const client = new MongoClient(uri);
 
 
 const app = express();
-app.use(express.json());
+app.use(cors());
 app.set('port', process.env.PORT || 3000);
-app.post('/findOne', async (req,res) => {
-    try {
-        const database = client.db(req.body.database);
-        const coll = database.collection(req.body.collection);
-        const filter = req.body.filter;
 
-        const projection = { projection: req.body.projection };
-        const guide = await coll.findOne(filter, projection);
+app.get('/findOne', async (req,res) => {
+    try {
+        const database = client.db('sample_weatherdata');
+        const coll = database.collection('data');
+
+        const filter = { type: req.query.type, callLetters: req.query.callLetters};
+
+        const weatherdata = await coll.findOne(filter);
 
         console.log(req.query);
 
         res.type('json');
         res.status(200);
-        res.status(200);
         res.json({
-          guide: guide
+            weatherdata: weatherdata['_id'],
+            st: weatherdata['st'],
+            ts: weatherdata['ts'],
+            elevation: weatherdata['elevation'],
+            callLetters: weatherdata['callLetters'],
+            qualityControlProcess: weatherdata['qualityControlProcess'],
+            dataSource: weatherdata['dataSource'],
+            type: weatherdata['type']
         });
 
     } catch (error) {

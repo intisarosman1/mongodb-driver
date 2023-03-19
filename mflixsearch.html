@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge"> 
+    <title>MFlix Search</title>
+    <link rel="stylesheet" type="text/css" href="search.css" />
+</head>
+<style>
+    body {
+      background-color: rgb(221, 221, 221);
+      text-align: center;
+    }
+
+    ul {
+        list-style-type: none;
+        margin: 0 auto;
+        padding: 0;
+        width: 500px;
+        text-align: center;
+    }
+
+    </style>
+<body>
+    <main>
+        <h1>MFlix Search</h1>
+        <form>
+            <p>Title:</p>
+            <input id="title" type="text" value="The Cheat"><br>
+            <p>Year:</p>
+            <input id="year" type="value" value="1915"><br>
+            <p>Runtime:</p>
+            <input id="runtime" type="value" value="59"><br>
+        </form><br>
+
+        <button type="button" onclick="fetchResult()">Find movies!</button><br>
+        <ul id="result"></ul>
+
+        <script>
+            async function fetchResult() {
+                const title_text = document.getElementById("title").value;
+                const title_number = parseInt(title_text, 10);
+
+                const year_text = document.getElementById("year").value;
+                const year_number = parseInt(year_text, 10);
+
+                const runtime_text = document.getElementById("runtime").value;
+                const runtime_number = parseInt(runtime_text, 10);
+
+                const api_endpoint = `http://localhost:3000/findOne?title=${title_text}&year=${year_text}&runtime=${runtime_text}`;
+                const response = await fetch(api_endpoint);
+                const json_response = await response.json()
+
+                const mflix_result = document.getElementById("result");
+                mflix_result.innerHTML = "";
+
+                for (let i in json_response) {
+                    const li = document.createElement('li');
+                    li.innerText = i + "\n" + json_response[i] + "\n\r";
+                    mflix_result.appendChild(li);
+                } 
+            }
+        </script>
+    </main>
+</body>
+</html>

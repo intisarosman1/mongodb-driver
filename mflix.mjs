@@ -20,24 +20,29 @@ const client = new MongoClient(uri);
 
 
 const app = express();
-app.use(express.json());
+app.use(cors());
 app.set('port', process.env.PORT || 3000);
-app.post('/findOne', async (req,res) => {
-    try {
-        const database = client.db(req.body.database);
-        const coll = database.collection(req.body.collection);
-        const filter = req.body.filter;
 
-        const projection = { projection: req.body.projection };
-        const guide = await coll.findOne(filter, projection);
+app.get('/findOne', async (req,res) => {
+    try {
+        const database = client.db('sample_mflix');
+        const coll = database.collection('movies');
+
+        const filter = { title: req.query.title, year: parseInt(req.query.year), runtime: parseInt(req.query.runtime)};
+
+        const movie = await coll.findOne(filter);
 
         console.log(req.query);
 
         res.type('json');
         res.status(200);
-        res.status(200);
         res.json({
-          guide: guide
+          movie: movie['_id'],
+          title: movie['title'],  
+          poster: movie['poster'],
+          year: movie['year'],
+          plot: movie['plot'], 
+          runtime: movie['runtime']
         });
 
     } catch (error) {
